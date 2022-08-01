@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  RestAPI:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Body:
+        openapi: "3.0.1"
+        info:
+          title: "EducativeRestAPI"
+          description: "Rest API for Educative API Gateway Course"
+          version: "2022-06-06T10:08:49Z"
+        paths:
+          /query:
+            get:
+              parameters:
+                - name: "n"
+                  in: "query"
+                  schema:
+                    type: "string"
+              responses:
+                "200":
+                  description: "200 response"
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/Empty"
+              x-amazon-apigateway-integration:
+                httpMethod: "GET"
+                uri: "https://api.agify.io"
+                responses:
+                  default:
+                    statusCode: "200"
+                requestParameters:
+                  integration.request.querystring.name: "method.request.querystring.n"
+                passthroughBehavior: "when_no_match"
+                type: "http"
+        components:
+          schemas:
+            Empty:
+              title: "Empty Schema"
+              type: "object"
